@@ -19,6 +19,8 @@ import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.network.packet.c2s.play.CustomPayloadC2SPacket;
+import net.projectile_damage.api.EntityAttributes_ProjectileDamage;
+import net.spell_power.api.attributes.EntityAttributes_SpellPower;
 
 public class PlayerStatsClientPacket {
 
@@ -38,11 +40,22 @@ public class PlayerStatsClientPacket {
                     playerStatsManager.getPlayerEntity().getAttributeInstance(EntityAttributes.GENERIC_ATTACK_DAMAGE)
                             .setBaseValue(ConfigInit.CONFIG.attackBase + (double) playerStatsManager.getSkillLevel(Skill.STRENGTH) * ConfigInit.CONFIG.attackBonus);
                 }
+                if (skill == Skill.ARCHERY) {
+                    playerStatsManager.getPlayerEntity().getAttributeInstance(EntityAttributes_ProjectileDamage.GENERIC_PROJECTILE_DAMAGE)
+                            .setBaseValue(ConfigInit.CONFIG.attackBase + (double) playerStatsManager.getSkillLevel(Skill.ARCHERY) * ConfigInit.CONFIG.archeryBowExtraDamage);
+                }
                 PlayerStatsServerPacket.syncLockedCraftingItemList(playerStatsManager);
                 switch (skill) {
                 case SMITHING -> PlayerStatsServerPacket.syncLockedSmithingItemList(playerStatsManager);
                 case MINING -> PlayerStatsServerPacket.syncLockedBlockList(playerStatsManager);
-                case ALCHEMY -> PlayerStatsServerPacket.syncLockedBrewingItemList(playerStatsManager);
+                case ALCHEMY -> {
+                    PlayerStatsServerPacket.syncLockedBrewingItemList(playerStatsManager);
+                    EntityAttributes_SpellPower.POWER.forEach((magicSchool, customEntityAttribute) -> {
+                        playerStatsManager.getPlayerEntity().getAttributeInstance(customEntityAttribute)
+                                .setBaseValue(ConfigInit.CONFIG.attackBase + (double) playerStatsManager.getSkillLevel(Skill.ALCHEMY) * ConfigInit.CONFIG.attackBonus);
+
+                    });
+                }
                 default -> {
                 }
                 }
@@ -117,6 +130,12 @@ public class PlayerStatsClientPacket {
                         client.player.setHealth(client.player.getMaxHealth());
                     }
                     case STRENGTH -> client.player.getAttributeInstance(EntityAttributes.GENERIC_ATTACK_DAMAGE).setBaseValue(ConfigInit.CONFIG.attackBase);
+                    case ARCHERY -> client.player.getAttributeInstance(EntityAttributes_ProjectileDamage.GENERIC_PROJECTILE_DAMAGE).setBaseValue(ConfigInit.CONFIG.attackBase);
+                    case ALCHEMY -> {
+                            EntityAttributes_SpellPower.POWER.forEach((magicSchool, customEntityAttribute) -> {
+                                client.player.getAttributeInstance(customEntityAttribute).setBaseValue(ConfigInit.CONFIG.attackBase);
+                            });
+                        }
                     case AGILITY -> client.player.getAttributeInstance(EntityAttributes.GENERIC_MOVEMENT_SPEED).setBaseValue(ConfigInit.CONFIG.movementBase);
                     case DEFENSE -> client.player.getAttributeInstance(EntityAttributes.GENERIC_ARMOR).setBaseValue(ConfigInit.CONFIG.defenseBase);
                     case LUCK -> client.player.getAttributeInstance(EntityAttributes.GENERIC_LUCK).setBaseValue(ConfigInit.CONFIG.luckBase);
@@ -267,9 +286,15 @@ public class PlayerStatsClientPacket {
                 .setBaseValue(ConfigInit.CONFIG.movementBase + (double) playerStatsManager.getSkillLevel(Skill.AGILITY) * ConfigInit.CONFIG.movementBonus);
         player.getAttributeInstance(EntityAttributes.GENERIC_ATTACK_DAMAGE)
                 .setBaseValue(ConfigInit.CONFIG.attackBase + (double) playerStatsManager.getSkillLevel(Skill.STRENGTH) * ConfigInit.CONFIG.attackBonus);
+        player.getAttributeInstance(EntityAttributes_ProjectileDamage.GENERIC_PROJECTILE_DAMAGE)
+                .setBaseValue(ConfigInit.CONFIG.attackBase + (double) playerStatsManager.getSkillLevel(Skill.ARCHERY) * ConfigInit.CONFIG.archeryBowExtraDamage);
         player.getAttributeInstance(EntityAttributes.GENERIC_ARMOR)
                 .setBaseValue(ConfigInit.CONFIG.defenseBase + (double) playerStatsManager.getSkillLevel(Skill.DEFENSE) * ConfigInit.CONFIG.defenseBonus);
         player.getAttributeInstance(EntityAttributes.GENERIC_LUCK).setBaseValue(ConfigInit.CONFIG.luckBase + (double) playerStatsManager.getSkillLevel(Skill.LUCK) * ConfigInit.CONFIG.luckBonus);
+        EntityAttributes_SpellPower.POWER.forEach((magicSchool, customEntityAttribute) -> {
+            player.getAttributeInstance(customEntityAttribute)
+                    .setBaseValue(ConfigInit.CONFIG.attackBase + (double) playerStatsManager.getSkillLevel(Skill.ALCHEMY) * ConfigInit.CONFIG.attackBonus);
+        });
         PlayerStatsServerPacket.syncLockedBlockList(playerStatsManager);
         PlayerStatsServerPacket.syncLockedBrewingItemList(playerStatsManager);
         PlayerStatsServerPacket.syncLockedSmithingItemList(playerStatsManager);

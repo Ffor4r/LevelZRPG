@@ -3,6 +3,8 @@ package net.levelz.mixin.player;
 import com.mojang.authlib.GameProfile;
 
 import net.levelz.stats.Skill;
+import net.projectile_damage.api.EntityAttributes_ProjectileDamage;
+import net.spell_power.api.attributes.EntityAttributes_SpellPower;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -51,6 +53,12 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity implements Pl
                 .setBaseValue(ConfigInit.CONFIG.defenseBase + (double) playerStatsManager.getSkillLevel(Skill.DEFENSE) * ConfigInit.CONFIG.defenseBonus);
         serverPlayerEntity.getAttributeInstance(EntityAttributes.GENERIC_LUCK)
                 .setBaseValue(ConfigInit.CONFIG.luckBase + (double) playerStatsManager.getSkillLevel(Skill.LUCK) * ConfigInit.CONFIG.luckBonus);
+        serverPlayerEntity.getAttributeInstance(EntityAttributes_ProjectileDamage.GENERIC_PROJECTILE_DAMAGE)
+                .setBaseValue(ConfigInit.CONFIG.attackBase + (double) playerStatsManager.getSkillLevel(Skill.ARCHERY) * ConfigInit.CONFIG.archeryBowExtraDamage);
+        EntityAttributes_SpellPower.POWER.forEach((magicSchool, customEntityAttribute) -> {
+            serverPlayerEntity.getAttributeInstance(customEntityAttribute)
+                    .setBaseValue(ConfigInit.CONFIG.attackBase + (double) playerStatsManager.getSkillLevel(Skill.ALCHEMY) * ConfigInit.CONFIG.attackBonus);
+        });
         // Init stats - Can't send to client cause network hander is null -> onSpawn packet
     }
 
