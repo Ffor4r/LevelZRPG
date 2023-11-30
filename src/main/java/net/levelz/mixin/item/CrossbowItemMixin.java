@@ -51,13 +51,13 @@ public class CrossbowItemMixin {
     @Inject(method = "createArrow", at = @At(value = "TAIL"), locals = LocalCapture.CAPTURE_FAILSOFT)
     private static void createArrowMixin(World world, LivingEntity entity, ItemStack crossbow, ItemStack arrow, CallbackInfoReturnable<PersistentProjectileEntity> info, ArrowItem arrowItem,
             PersistentProjectileEntity persistentProjectileEntity) {
-        if (entity instanceof PlayerEntity player) {
-            int archeryLevel = ((PlayerStatsManagerAccess) player).getPlayerStatsManager().getSkillLevel(Skill.ARCHERY);
-            persistentProjectileEntity.setDamage(
-                    persistentProjectileEntity.getDamage() + (archeryLevel >= ConfigInit.CONFIG.maxLevel && ConfigInit.CONFIG.archeryDoubleDamageChance > entity.getWorld().getRandom().nextFloat()
-                            ? persistentProjectileEntity.getDamage() * 2D
-                            : (double) archeryLevel * ConfigInit.CONFIG.archeryCrossbowExtraDamage));
-        }
+//        if (entity instanceof PlayerEntity player) {
+//            int archeryLevel = ((PlayerStatsManagerAccess) player).getPlayerStatsManager().getSkillLevel(Skill.ARCHERY);
+//            persistentProjectileEntity.setDamage(
+//                    persistentProjectileEntity.getDamage() + (archeryLevel >= ConfigInit.CONFIG.maxLevel && ConfigInit.CONFIG.archeryDoubleDamageChance > entity.getWorld().getRandom().nextFloat()
+//                            ? persistentProjectileEntity.getDamage() * 2D
+//                            : (double) archeryLevel * ConfigInit.CONFIG.archeryCrossbowExtraDamage));
+//        }
 
     }
 }
