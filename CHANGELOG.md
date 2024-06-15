@@ -1,7 +1,7 @@
 ### Added:
-- 
+- Added spawner mob xp config option
 ### Fixed:
-- Fixed treechop incompat
-- Fixed tab tooltip
+- Fixed armor switching
+- Fixed rei tooltip issue
 ### Changed:
-- 
+- Tweaked advancement criteria
