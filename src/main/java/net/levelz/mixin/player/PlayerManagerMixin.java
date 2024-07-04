@@ -1,5 +1,6 @@
 package net.levelz.mixin.player;
 
+import net.fabric_extras.ranged_weapon.api.EntityAttributes_RangedWeapon;
 import net.levelz.access.PlayerStatsManagerAccess;
 import net.levelz.init.ConfigInit;
 import net.levelz.init.CriteriaInit;
@@ -19,8 +20,7 @@ import net.minecraft.util.UserCache;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.GameRules;
 
-import net.projectile_damage.api.EntityAttributes_ProjectileDamage;
-import net.spell_power.api.attributes.EntityAttributes_SpellPower;
+import net.spell_power.api.SpellSchools;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -69,12 +69,12 @@ public class PlayerManagerMixin {
             serverPlayerEntity.getAttributeInstance(EntityAttributes.GENERIC_MAX_HEALTH).setBaseValue(player.getAttributeBaseValue(EntityAttributes.GENERIC_MAX_HEALTH));
             serverPlayerEntity.setHealth(serverPlayerEntity.getMaxHealth());
             serverPlayerEntity.getAttributeInstance(EntityAttributes.GENERIC_ATTACK_DAMAGE).setBaseValue(player.getAttributeBaseValue(EntityAttributes.GENERIC_ATTACK_DAMAGE));
-            serverPlayerEntity.getAttributeInstance(EntityAttributes_ProjectileDamage.GENERIC_PROJECTILE_DAMAGE).setBaseValue(player.getAttributeBaseValue(EntityAttributes_ProjectileDamage.GENERIC_PROJECTILE_DAMAGE));
+            serverPlayerEntity.getAttributeInstance(EntityAttributes_RangedWeapon.DAMAGE.attribute).setBaseValue(player.getAttributeBaseValue(EntityAttributes_RangedWeapon.DAMAGE.attribute));
             serverPlayerEntity.getAttributeInstance(EntityAttributes.GENERIC_MOVEMENT_SPEED).setBaseValue(player.getAttributeBaseValue(EntityAttributes.GENERIC_MOVEMENT_SPEED));
             serverPlayerEntity.getAttributeInstance(EntityAttributes.GENERIC_ARMOR).setBaseValue(player.getAttributeBaseValue(EntityAttributes.GENERIC_ARMOR));
             serverPlayerEntity.getAttributeInstance(EntityAttributes.GENERIC_LUCK).setBaseValue(player.getAttributeBaseValue(EntityAttributes.GENERIC_LUCK));
-            EntityAttributes_SpellPower.POWER.forEach((magicSchool, customEntityAttribute) -> {
-                serverPlayerEntity.getAttributeInstance(customEntityAttribute).setBaseValue(player.getAttributeBaseValue(customEntityAttribute));
+            SpellSchools.all().forEach((magicSchool) -> {
+                serverPlayerEntity.getAttributeInstance(magicSchool.attribute).setBaseValue(player.getAttributeBaseValue(magicSchool.attribute));
             });
             // Sync strength on client cause out of any reason it doesn't work naturally
             PlayerStatsServerPacket.writeS2CStrengthPacket(serverPlayerEntity);

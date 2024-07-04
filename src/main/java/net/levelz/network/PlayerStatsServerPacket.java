@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import io.netty.buffer.PooledByteBufAllocator;
 import io.netty.buffer.Unpooled;
+import net.fabric_extras.ranged_weapon.api.EntityAttributes_RangedWeapon;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.levelz.access.PlayerStatsManagerAccess;
 import net.levelz.access.PlayerSyncAccess;
@@ -20,8 +21,7 @@ import net.minecraft.network.packet.Packet;
 import net.minecraft.network.packet.s2c.play.CustomPayloadS2CPacket;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.Identifier;
-import net.projectile_damage.api.EntityAttributes_ProjectileDamage;
-import net.spell_power.api.attributes.EntityAttributes_SpellPower;
+import net.spell_power.api.SpellSchools;
 
 public class PlayerStatsServerPacket {
 
@@ -72,14 +72,15 @@ public class PlayerStatsServerPacket {
                     case MINING -> syncLockedBlockList(playerStatsManager);
                     case ALCHEMY -> {
                         syncLockedBrewingItemList(playerStatsManager);
-                        EntityAttributes_SpellPower.POWER.forEach((magicSchool, customEntityAttribute) -> {
-                            player.getAttributeInstance(customEntityAttribute)
-                                    .setBaseValue(player.getAttributeBaseValue(customEntityAttribute) + ConfigInit.CONFIG.attackBonus * level);
+                        SpellSchools.all().forEach((magicSchool) -> {
+                            player.getAttributeInstance(magicSchool.attribute)
+                                    .setBaseValue(player.getAttributeBaseValue(magicSchool.attribute) + ConfigInit.CONFIG.attackBonus * level);
                         });
                     }
                     case SMITHING -> syncLockedSmithingItemList(playerStatsManager);
-                    case ARCHERY -> player.getAttributeInstance(EntityAttributes_ProjectileDamage.GENERIC_PROJECTILE_DAMAGE)
-                            .setBaseValue(player.getAttributeBaseValue(EntityAttributes_ProjectileDamage.GENERIC_PROJECTILE_DAMAGE) + ConfigInit.CONFIG.archeryBowExtraDamage * level);
+
+                    case ARCHERY -> player.getAttributeInstance(EntityAttributes_RangedWeapon.DAMAGE.attribute)
+                            .setBaseValue(player.getAttributeBaseValue(EntityAttributes_RangedWeapon.DAMAGE.attribute) + ConfigInit.CONFIG.archeryBowExtraDamage * level);
                     default -> {
                     }
                     }
@@ -299,11 +300,11 @@ public class PlayerStatsServerPacket {
         }
         case STRENGTH -> serverPlayerEntity.getAttributeInstance(EntityAttributes.GENERIC_ATTACK_DAMAGE).setBaseValue(ConfigInit.CONFIG.attackBase + skillLevel * ConfigInit.CONFIG.attackBonus);
         case ALCHEMY -> {
-            EntityAttributes_SpellPower.POWER.forEach((magicSchool, customEntityAttribute) -> {
-                serverPlayerEntity.getAttributeInstance(customEntityAttribute).setBaseValue(ConfigInit.CONFIG.attackBase + skillLevel * ConfigInit.CONFIG.attackBonus);
+            SpellSchools.all().forEach((magicSchool) -> {
+                serverPlayerEntity.getAttributeInstance(magicSchool.attribute).setBaseValue(ConfigInit.CONFIG.attackBase + skillLevel * ConfigInit.CONFIG.attackBonus);
             });
         }
-        case ARCHERY -> serverPlayerEntity.getAttributeInstance(EntityAttributes_ProjectileDamage.GENERIC_PROJECTILE_DAMAGE).setBaseValue(skillLevel * ConfigInit.CONFIG.archeryBowExtraDamage);
+        case ARCHERY -> serverPlayerEntity.getAttributeInstance(EntityAttributes_RangedWeapon.DAMAGE.attribute).setBaseValue(skillLevel * ConfigInit.CONFIG.archeryBowExtraDamage);
         case AGILITY -> serverPlayerEntity.getAttributeInstance(EntityAttributes.GENERIC_MOVEMENT_SPEED).setBaseValue(ConfigInit.CONFIG.movementBase + skillLevel * ConfigInit.CONFIG.movementBonus);
         case DEFENSE -> serverPlayerEntity.getAttributeInstance(EntityAttributes.GENERIC_ARMOR).setBaseValue(ConfigInit.CONFIG.defenseBase + skillLevel * ConfigInit.CONFIG.defenseBonus);
         case LUCK -> serverPlayerEntity.getAttributeInstance(EntityAttributes.GENERIC_LUCK).setBaseValue(ConfigInit.CONFIG.luckBase + skillLevel * ConfigInit.CONFIG.luckBonus);

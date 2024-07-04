@@ -194,7 +194,7 @@
     "spritetip.levelz.luck_skill_info_1": "Увеличивает ценность добычи",
     "spritetip.levelz.luck_skill_info_2": "Увеличивает шанс критического удара",
   
-    "spritetip.levelz.archery_skill": "Лучник",
+    "spritetip.levelz.archery_skill": "Стрельба",
     "spritetip.levelz.archery_skill_info_1": "Увеличивает урон лука",
     "spritetip.levelz.archery_skill_info_2": "Увеличивает урон арбалета",
     "spritetip.levelz.archery_skill_info_3": "Открывает предметы для стрельбы",
@@ -213,8 +213,8 @@
     "spritetip.levelz.farming_skill": "Фермерство",
     "spritetip.levelz.farming_skill_info": "Открывает предметы для сельского хозяйства",
   
-    "spritetip.levelz.alchemy_skill": "Алхимия",
-    "spritetip.levelz.alchemy_skill_info": "Открывает предметы алхимии",
+    "spritetip.levelz.alchemy_skill": "Интеллект",
+    "spritetip.levelz.alchemy_skill_info": "Открывает магические предметы",
   
     "container.levelz.enchant": "Тир %d открывается на %s уровне %d",
   

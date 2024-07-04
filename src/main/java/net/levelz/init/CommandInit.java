@@ -2,8 +2,8 @@ package net.levelz.init;
 
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 
-import net.projectile_damage.api.EntityAttributes_ProjectileDamage;
-import net.spell_power.api.attributes.EntityAttributes_SpellPower;
+import net.fabric_extras.ranged_weapon.api.EntityAttributes_RangedWeapon;
+import net.spell_power.api.SpellSchools;
 import org.apache.commons.lang3.StringUtils;
 
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
@@ -318,11 +318,11 @@ public class CommandInit {
                 } else if (skill.equals("luck")) {
                     serverPlayerEntity.getAttributeInstance(EntityAttributes.GENERIC_LUCK).setBaseValue(ConfigInit.CONFIG.luckBase + (double) playerSkillLevel * ConfigInit.CONFIG.luckBonus);
                 } else if (skill.equals("archery")) {
-                    serverPlayerEntity.getAttributeInstance(EntityAttributes_ProjectileDamage.GENERIC_PROJECTILE_DAMAGE).setBaseValue(ConfigInit.CONFIG.attackBase + (double) playerSkillLevel * ConfigInit.CONFIG.archeryBowExtraDamage);
+                    serverPlayerEntity.getAttributeInstance(EntityAttributes_RangedWeapon.DAMAGE.attribute).setBaseValue(ConfigInit.CONFIG.attackBase + (double) playerSkillLevel * ConfigInit.CONFIG.archeryBowExtraDamage);
                 } else if (skill.equals("alchemy")) {
                     int playerSkillLevelAlchemy = playerSkillLevel;
-                    EntityAttributes_SpellPower.POWER.forEach((magicSchool, customEntityAttribute) -> {
-                        serverPlayerEntity.getAttributeInstance(customEntityAttribute).setBaseValue(ConfigInit.CONFIG.attackBase + (double) playerSkillLevelAlchemy * ConfigInit.CONFIG.attackBonus);
+                    SpellSchools.all().forEach((magicSchool) -> {
+                        serverPlayerEntity.getAttributeInstance(magicSchool.attribute).setBaseValue(ConfigInit.CONFIG.attackBase + (double) playerSkillLevelAlchemy * ConfigInit.CONFIG.attackBonus);
                     });
                 }
             }
